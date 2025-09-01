@@ -4,14 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import style
-style.use('ggplot')
+import io
 import warnings
+
+style.use('ggplot')
 warnings.filterwarnings('ignore')
 
 def main():
-    st.title("Big Mart Sales Data Exploration")
+    st.title("📊 Big Mart Sales EDA")
 
-    # Upload CSV file
     uploaded_file = st.file_uploader("Upload your Training.csv file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
@@ -20,9 +21,9 @@ def main():
         st.dataframe(df.head())
 
         st.subheader("Dataset Info")
-        buffer = []
+        buffer = io.StringIO()
         df.info(buf=buffer)
-        info_str = "\n".join(buffer)
+        info_str = buffer.getvalue()
         st.text(info_str)
 
         st.subheader("Missing Values Count")
@@ -40,7 +41,6 @@ def main():
         st.subheader("Categorical Feature: Outlet_Size Value Counts")
         st.write(categorical_data['Outlet_Size'].value_counts())
 
-        # Plots
         st.subheader("Countplot: Outlet_Size")
         fig, ax = plt.subplots()
         sns.countplot(x='Outlet_Size', data=categorical_data, ax=ax)
@@ -107,6 +107,8 @@ def main():
         fig, ax = plt.subplots(figsize=(10, 7))
         sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
         st.pyplot(fig)
+    else:
+        st.info("Please upload the Training.csv file to proceed.")
 
 if __name__ == "__main__":
     main()
